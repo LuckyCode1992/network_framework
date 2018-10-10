@@ -52,6 +52,7 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
         }
     }
 
+    constructor()
     constructor(baseurl: String?, childurl: String?) : super() {
         this.baseurl = baseurl
         this.childurl = childurl
@@ -135,10 +136,14 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
     override fun execute() {
         var url: String? = null
         baseurl?.let {
-            url += it
+            url = it
         }
         childurl.let {
-            url += it
+            if (TextUtils.isEmpty(url)) {
+                url = it
+            } else {
+                url += it
+            }
         }
         if (TextUtils.isEmpty(url)) {
             return
@@ -157,7 +162,7 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
                 if (fileMap != null && fileMap.size > 0) {
                     tempMap.putAll(fileMap)
                 }
-                request = PostRequest.Build(url, tempMap)
+                request = PostRequest.Build(url, map)
             }
             BODY -> {
                 request = BodyRequest.build(url, body)
@@ -193,7 +198,7 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
                 try {
                     //Gson解析响应
                     val httpResult = HttpResult<T>()
-                    httpResult.entity = decodeAndProcessModel(json, httpResult)
+                    httpResult.result = decodeAndProcessModel(json, httpResult)
                     runOnResult(httpResult)
                 } catch (e: Exception) {
                     Log.e("错误日志", "日志：${Log.getStackTraceString(e)}")
@@ -209,16 +214,16 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
     fun decodeAndProcessModel(json: String?, httpResult: HttpResult<T>): T? {
         //默认解析公共的数据
         val resultObject = JSONObject(json)
-        httpResult.code = (resultObject.getInt("code"))
-        if (resultObject.has("message"))
-            httpResult.message = (resultObject.getString("message"))
+        httpResult.error_code = (resultObject.getInt("error_code"))
+        if (resultObject.has("reason"))
+            httpResult.reason = (resultObject.getString("reason"))
         //解析非公共的数据
         val e = decodeModel(json, httpResult)
-        httpResult.entity = e
+        httpResult.result = e
         return e
     }
 
-    fun decodeModel(json: String?, httpResult: HttpResult<T>): T? {
+    open fun decodeModel(json: String?, httpResult: HttpResult<T>): T? {
         return null
     }
 

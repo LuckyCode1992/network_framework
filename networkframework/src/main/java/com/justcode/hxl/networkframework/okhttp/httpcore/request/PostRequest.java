@@ -1,5 +1,7 @@
 package com.justcode.hxl.networkframework.okhttp.httpcore.request;
 
+import com.alibaba.fastjson.JSON;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +25,10 @@ public class PostRequest {
      */
     public static Request Build(String url, Map<String, String> map) {
 
-        FormBody.Builder formBody = new FormBody.Builder();//创建表单请求体
+       FormBody.Builder formBody = new FormBody.Builder();//创建表单请求体
+
+
+       // RequestBody body = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"), JSON.toJSONString(map));
 
         if (map != null && map.size() > 0) {
             for (Map.Entry<String, String> entry : map.entrySet()) {

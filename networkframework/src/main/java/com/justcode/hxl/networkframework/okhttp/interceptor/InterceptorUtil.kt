@@ -12,7 +12,7 @@ class InterceptorUtil {
         fun buildToast2Action1(context: Context): Action1<HttpResult<*>> {
             return object : Action1<HttpResult<*>> {
                 override fun call(t: HttpResult<*>) {
-                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, t.reason, Toast.LENGTH_SHORT).show()
                 }
 
             }

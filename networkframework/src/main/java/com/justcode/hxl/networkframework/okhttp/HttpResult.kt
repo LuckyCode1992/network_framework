@@ -4,7 +4,7 @@ package com.justcode.hxl.networkframework.okhttp
  * http请求结果返回实体
  * 具体数据结构根据后台返回进行修改
  */
- data class HttpResult<T>(var entity: T? = null, var code: Int? = null, var message: String? = null) {
+ data class HttpResult<T>(var result: T? = null, var error_code: Int? = null, var reason: String? = null) {
 
     /**
      * 自行定义错误类型和提示语，也可以不用
