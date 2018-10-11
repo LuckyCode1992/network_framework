@@ -3,6 +3,7 @@ package com.justcode.hxl.networkframework.okhttp.interceptor
 import android.content.Context
 import android.os.Handler
 import android.util.Log
+import com.justcode.hxl.networkframework.LogHttp
 import com.justcode.hxl.networkframework.okhttp.HttpResult
 import com.justcode.hxl.networkframework.okhttp.action.Action1
 import com.justcode.hxl.networkframework.okhttp.function.Function1
@@ -30,7 +31,7 @@ abstract class InterceptorHttpAction<T, S> {
      * 这里其实是把start和complete的回掉注入到一个pair中，
      * 这个pair中，是存放Runnable，这个Runnable其实是用来启动一个线程的
      */
-     fun addInterceptor(action: InterceptorInterface): InterceptorHttpAction<T, S> {
+    fun addInterceptor(action: InterceptorInterface): InterceptorHttpAction<T, S> {
         addAction(object : Function1<Pair<Runnable, Runnable>> {
             override fun call(): Pair<Runnable, Runnable> {
                 return Pair(Runnable {
@@ -48,7 +49,7 @@ abstract class InterceptorHttpAction<T, S> {
      * 这以下其实，是将start和complete分别放入两个集合中，方便后续调用
      * 之所以，这里要用这么麻烦，其实是因为要用Callable，实现线程的管理
      */
-      fun addAction(actionBuilder: Function1<Pair<Runnable, Runnable>>): InterceptorHttpAction<T, S> {
+    fun addAction(actionBuilder: Function1<Pair<Runnable, Runnable>>): InterceptorHttpAction<T, S> {
         var actions: Pair<Runnable, Runnable>? = null
 
         try {
@@ -103,6 +104,7 @@ abstract class InterceptorHttpAction<T, S> {
                 for (action in it) {
                     action.call(httpResult)
                 }
+                LogHttp.log("这里可以做一些统一操作:" + httpResult.error_code)
             }
         }
     }
@@ -134,7 +136,7 @@ abstract class InterceptorHttpAction<T, S> {
      *
      *  if (t.code == 0) 这个判断条件根据自己后台返回结果自行更改
      */
-     fun onSuccess(action: Action1<HttpResult<*>>): InterceptorHttpAction<T, S> {
+    fun onSuccess(action: Action1<HttpResult<*>>): InterceptorHttpAction<T, S> {
         addActionOnResult(object : Action1<HttpResult<*>> {
             override fun call(t: HttpResult<*>) {
 
@@ -147,7 +149,7 @@ abstract class InterceptorHttpAction<T, S> {
     /**
      * 设置请求失败时的回调任务, 将之添加到结果处理任务列表中
      */
-      fun onFail(action: Action1<HttpResult<*>>): InterceptorHttpAction<T, S> {
+    fun onFail(action: Action1<HttpResult<*>>): InterceptorHttpAction<T, S> {
         addActionOnResult(object : Action1<HttpResult<*>> {
             override fun call(result: HttpResult<*>) {
 
@@ -160,7 +162,7 @@ abstract class InterceptorHttpAction<T, S> {
     /**
      * 请求失败时, 弹Toast的任务
      */
-     fun onFailToast(context: Context): InterceptorHttpAction<T, S> {
+    fun onFailToast(context: Context): InterceptorHttpAction<T, S> {
         return onFail(InterceptorUtil.buildToast2Action1(context))
     }
 
