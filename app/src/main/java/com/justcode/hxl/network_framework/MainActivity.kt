@@ -30,6 +30,13 @@ class MainActivity : AppCompatActivity() {
 
 
                     })
+                    //可以不实现
+                    .onFail(object : Action1<HttpResult<*>> {
+                        override fun call(t: HttpResult<*>) {
+
+                        }
+
+                    })
                     .onFailToast(this)
                     .execute()
 
