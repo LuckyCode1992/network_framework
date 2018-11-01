@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btn_okhttp.setOnClickListener {
+
             WeatherAction()
                     .addParam("重庆")
                     .addInterceptor(InterceptorUtil.buildLoading(NormalLoading(this)))
@@ -27,13 +28,10 @@ class MainActivity : AppCompatActivity() {
                                 tv_okhttp.text = JSON.toJSONString(wetherData)
                             }
                         }
-
-
                     })
                     //可以不实现
                     .onFail(object : Action1<HttpResult<*>> {
                         override fun call(t: HttpResult<*>) {
-
                         }
 
                     })

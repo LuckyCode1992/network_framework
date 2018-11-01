@@ -7,17 +7,16 @@ import com.justcode.hxl.networkframework.okhttp.httpcore.HttpAction
 import java.net.URLEncoder
 import java.nio.charset.Charset
 
-class WeatherAction(childurl: String? = null) : HttpAction<WetherData>("http://op.juhe.cn/onebox/weather/query") {
+class WeatherAction(childurl: String? = "http://op.juhe.cn/onebox/weather/query") : HttpAction<WetherData>(childurl) {
 
 
     fun addParam(cityname: String): WeatherAction {
 
 
-
-        Log.d("WeatherAction",cityname)
+        Log.d("WeatherAction", cityname)
         add("cityname", cityname)
         add("key", "33c5d3d8f81aa1e8dcd573b951e4eba6")
-        add("dtype","json")
+        add("dtype", "json")
         return this
     }
 

@@ -1,5 +1,6 @@
 package com.justcode.hxl.networkframework.okhttp.httpcore
 
+import android.app.Activity
 import android.text.TextUtils
 import android.util.Log
 import com.alibaba.fastjson.JSON
@@ -33,6 +34,8 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
     val POST = "POST"
     val BODY = "BODY"
     var methodTag = POST
+
+    var activityIsFinsh = false
 
     companion object {
         /**
@@ -78,6 +81,16 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
         return this
     }
 
+    /**
+     * 绑定activity，网络请求回掉如果要更新UI，那么必须保证当前activity在存活状态，否则会报错
+     */
+    fun bindActivity(activity: Activity? = null): HttpAction<*> {
+        if (activity == null) {
+            return this
+        }
+        activityIsFinsh = activity.isFinishing
+        return this
+    }
 
     /**
      * 为单次请求配置连接超时时间
@@ -185,6 +198,9 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
             override fun onFailure(call: Call?, e: IOException?) {
                 LogHttp.log("响应:\n" + (url + "\t" + "onError" + "\t" + e?.message))
                 //请求结束后的回调(Gson解析前)
+                if (activityIsFinsh) {
+                    return
+                }
                 runOnComplet()
                 runOnResult(HttpResult.defaultErrorResult)
 
@@ -194,6 +210,9 @@ abstract class HttpAction<T> : InterceptorHttpAction<T, String> {
                 val json = response?.body()?.string()
                 LogHttp.log("响应:\n$url\tonResponse\n$json")
                 //请求结束后的回调(Gson解析前)
+                if (activityIsFinsh) {
+                    return
+                }
                 runOnComplet()
                 try {
                     //Gson解析响应
