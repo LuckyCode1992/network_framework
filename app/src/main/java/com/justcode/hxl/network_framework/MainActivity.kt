@@ -1,5 +1,6 @@
 package com.justcode.hxl.network_framework
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import com.justcode.hxl.network_framework.okdemo.WetherData
 import com.justcode.hxl.network_framework.retrofitdemo.API
 import com.justcode.hxl.network_framework.retrofitdemo.LoginRequest
 import com.justcode.hxl.network_framework.retrofitdemo.LoginResult
+import com.justcode.hxl.network_framework.tcpdemo.TCPActivity
 import com.justcode.hxl.networkframework.loading.NormalLoading
 import com.justcode.hxl.networkframework.okhttp.HttpResult
 import com.justcode.hxl.networkframework.okhttp.action.Action1
@@ -81,6 +83,9 @@ class MainActivity : AppCompatActivity() {
                     )
 
 
+        }
+        btn_tcp.setOnClickListener {
+            startActivity(Intent(this,TCPActivity::class.java))
         }
 
     }

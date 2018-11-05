@@ -4,6 +4,9 @@ import android.app.Application
 import com.justcode.hxl.networkframework.okhttp.header.CommonHeaderInterceptor
 import com.justcode.hxl.networkframework.okhttp.httpcore.HttpAction
 import com.justcode.hxl.networkframework.retrofit.ApiService
+import com.justcode.hxl.networkframework.tcp.socket.sdk.OkSocket
+import com.justcode.hxl.networkframework.tcp.socket.sdk.client.OkSocketOptions
+
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,5 +24,8 @@ class Myapplication : Application() {
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(1, TimeUnit.MINUTES)
                 .writeTimeout(1, TimeUnit.MINUTES))
+        OkSocket.initialize(this, true)
+
+
     }
 }
