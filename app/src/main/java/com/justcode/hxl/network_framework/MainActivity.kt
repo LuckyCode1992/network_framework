@@ -3,6 +3,7 @@ package com.justcode.hxl.network_framework
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.justcode.hxl.network_framework.okdemo.WeatherAction
 import com.justcode.hxl.network_framework.okdemo.WetherData
@@ -14,11 +15,17 @@ import com.justcode.hxl.networkframework.okhttp.HttpResult
 import com.justcode.hxl.networkframework.okhttp.action.Action1
 import com.justcode.hxl.networkframework.okhttp.interceptor.InterceptorUtil
 import com.justcode.hxl.networkframework.retrofit.*
+import com.ptyh.smartyc.corelib.http.FileApi
+import com.ptyh.smartyc.corelib.http.FileApiService
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.schedulers.RxThreadFactory
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 
@@ -75,10 +82,27 @@ class MainActivity : AppCompatActivity() {
 
 
         }
-        Observable.interval(5, TimeUnit.SECONDS)
-                .subscribe {
 
-                }
+    }
+
+    fun uploadFile() {
+        var fileList: MutableList<File> = ArrayList()
+        val builder = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)//表单类型
+        fileList.forEach {
+            val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), it)
+            builder.addFormDataPart(it.name, it.name, requestBody)
+        }
+        FileApiService.api<FileApi>()
+                .upload("forum-note", builder.build().parts())
+                .io2Main()
+                .compose(HttpResultHandle.handle())
+                .subscribe({
+
+                }, {
+
+
+                })
     }
 }
 
