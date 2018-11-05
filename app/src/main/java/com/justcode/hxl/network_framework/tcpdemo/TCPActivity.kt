@@ -278,7 +278,11 @@ class TCPActivity : AppCompatActivity() {
                 if (TextUtils.isEmpty(msg.trim({ it <= ' ' }))) {
                     return@OnClickListener
                 }
-                val msgDataBean = MsgDataBean(msg)
+
+                val jsonObject = JsonObject()
+                jsonObject.addProperty("cmd", 100)
+                jsonObject.addProperty("data", msg)
+                val msgDataBean = MsgDataBean(jsonObject.toString())
                 mManager?.send(msgDataBean)
                 send_et.setText("")
             }
@@ -295,7 +299,7 @@ class TCPActivity : AppCompatActivity() {
         rece_list.setLayoutManager(manager2)
         rece_list.setAdapter(mReceLogAdapter)
 
-        mInfo = ConnectionInfo("104.238.184.237", 8080)
+        mInfo = ConnectionInfo("192.168.0.179", 1234)
         val builder = OkSocketOptions.Builder()
         mManager = open(mInfo).option(builder.build())
     }
